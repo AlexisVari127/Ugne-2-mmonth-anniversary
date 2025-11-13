@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Spotify Mini Player</title>
+  <style>
+    body {
+      background-color: #121212;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      color: white;
+    }
+
+    .player {
+      position: relative;
+      width: 320px;
+      padding: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+
+      /* background image */
+      background:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url("IMG_4512.JPG");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .cover {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .song-title {
+      margin-left: 20px;
+      text-align: start;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    .artist {
+      margin-left: 20px;
+      margin-top: 5px;
+      text-align: start;
+      color: #e8e8e8;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .play-btn {
+      background-color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .play-icon, .pause-icon {
+      width: 20px;
+      height: 20px;
+      fill: #000000;
+    }
+
+    .progress-bar {
+      justify-self: center;
+      align-self: center;
+      width: 90%;
+      height: 2px;
+      background-color: #ffffff;
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0;
+      background-color: #1db954;
+      transition: width 0.2s linear;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="player" style="height: 685px; width: 385px; justify-content: center; align-content: center">
+    <img alt="Album cover" class="cover bg"
+         src="./IMG_4512.JPG" style="width: 90%; height: auto" />
+    <div class="song-title">Happy 2 month anniversary :)</div>
+    <div class="artist">My babygirl Ugnitė <3</div>
+
+    <div class="controls">
+      <button class="play-btn" id="playPauseBtn">
+        <svg class="play-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="progress-bar" id="progressBar">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- Replace the link below with your own "Heaven Can Wait.mp3" file if you have it -->
+    <audio id="audio" src="./heavenCanWait.mp3"></audio>
+  </div>
+
+
+  <script>
+    const audio = document.getElementById("audio");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const progress = document.getElementById("progress");
+    const progressBar = document.getElementById("progressBar");
+
+    let isPlaying = false;
+
+    playPauseBtn.addEventListener("click", () => {
+      if (!isPlaying) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener("play", () => {
+      isPlaying = true;
+      playPauseBtn.innerHTML = `
+        <svg class="pause-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>`;
+    });
+
+    audio.addEventListener("pause", () => {
+      isPlaying = false;
+      playPauseBtn.innerHTML = `
+        <svg class="play-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z" />
+        </svg>`;
+    });
+
+    // Update progress bar while playing
+    audio.addEventListener("timeupdate", () => {
+      const progressPercent = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = progressPercent + "%";
+    });
+
+    // Make progress bar clickable
+    progressBar.addEventListener("click", (e) => {
+      const width = progressBar.clientWidth;
+      const clickX = e.offsetX;
+      const duration = audio.duration;
+      audio.currentTime = (clickX / width) * duration;
+    });
+  </script>
+</body>
+</html>
